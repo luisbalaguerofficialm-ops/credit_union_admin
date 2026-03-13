@@ -23,7 +23,7 @@ const RolePermission = ({ role, onClose, onSuccess }) => {
   const [permissions, setPermissions] = useState({});
   const [saving, setSaving] = useState(false);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
   const token = localStorage.getItem("adminToken");
 
   // Fetch role details and permissions on mount

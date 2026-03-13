@@ -2,14 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
 
-const ROLE_TYPES = [
-  "SuperAdmin",
-  "Admin",
-  "Support",
-  "Compliance",
-  "Finance",
-  "Custom",
-];
+const ROLE_TYPES = ["SuperAdmin", "Admin", "Support"];
 
 const PERMISSIONS = [
   "User Management",
@@ -35,7 +28,7 @@ const CreateRoleModal = ({ onClose, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [fetchingAdmins, setFetchingAdmins] = useState(true);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
   const token = localStorage.getItem("adminToken");
 
   // Fetch admins on mount
@@ -237,9 +230,7 @@ const CreateRoleModal = ({ onClose, onSuccess }) => {
                           type="checkbox"
                           className="w-4 h-4"
                           checked={permissions[item]?.[action] || false}
-                          onChange={() =>
-                            handlePermissionChange(item, action)
-                          }
+                          onChange={() => handlePermissionChange(item, action)}
                         />
                       </td>
                     ))}

@@ -3,8 +3,8 @@ import { Search, Send, Paperclip, Menu, Loader2, Check } from "lucide-react";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
-const SOCKET_URL = "https://admin-credit-union.onrender.com";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
+const SOCKET_URL = "https://admin-admin-credit.onrender.com";
 
 const LiveChats = () => {
   const [chats, setChats] = useState([]);

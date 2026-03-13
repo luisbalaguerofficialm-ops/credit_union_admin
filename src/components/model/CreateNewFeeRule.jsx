@@ -1,21 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { toast } from "react-toastify";
 import { ArrowLeft } from "lucide-react";
+import { AuthContext } from "../../context/AuthContext";
 
 const CreateNewFeeRule = ({ onClose, onSuccess }) => {
+  const { token } = useContext(AuthContext); // ✅ Get token from context
+
   const [form, setForm] = useState({
     ruleName: "",
     type: "",
     structure: "",
-    amount: "",
-    minLimit: "",
-    maxLimit: "",
+    fixedFee: "",
+    percentage: "",
     status: "Active",
+    tiers: [{ min: "", max: "", fee: "" }],
   });
+
   const [loading, setLoading] = useState(false);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
-  const token = localStorage.getItem("adminToken");
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,47 +27,56 @@ const CreateNewFeeRule = ({ onClose, onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !form.ruleName ||
-      !form.type ||
-      !form.structure ||
-      !form.amount ||
-      !form.minLimit ||
-      !form.maxLimit
-    ) {
-      toast.error("Please fill in all required fields");
+    if (!form.ruleName || !form.type || !form.structure) {
+      toast.error("Please fill required fields");
       return;
+    }
+
+    let payload = {
+      ruleName: form.ruleName,
+      type: form.type,
+      structure: form.structure,
+      status: form.status,
+    };
+
+    if (form.structure === "Tiered") {
+      payload.tiers = form.tiers.map((tier) => ({
+        min: Number(tier.min),
+        max: Number(tier.max),
+        fee: Number(tier.fee),
+      }));
+    }
+
+    if (form.structure === "Fixed") {
+      payload.fixedFee = Number(form.fixedFee);
+    }
+
+    if (form.structure === "Percentage") {
+      payload.percentage = Number(form.percentage);
     }
 
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/admin/fee-rules`, {
+
+      const res = await fetch(`${API_URL}/fees`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          name: form.ruleName,
-          type: form.type,
-          structure: form.structure,
-          amount: parseFloat(form.amount),
-          minLimit: parseFloat(form.minLimit),
-          maxLimit: parseFloat(form.maxLimit),
-          status: form.status,
-        }),
+        body: JSON.stringify(payload),
       });
+
       const data = await res.json();
-      if (data.success) {
+
+      if (res.ok && data.success) {
         toast.success("Fee rule created successfully");
-        if (onSuccess) onSuccess();
         onClose();
       } else {
-        toast.error(data.message || "Failed to create fee rule");
+        toast.error(data.message);
       }
     } catch (err) {
-      console.error("Create fee rule error:", err);
-      toast.error("Error connecting to server");
+      toast.error("Server error");
     } finally {
       setLoading(false);
     }
@@ -86,7 +98,6 @@ const CreateNewFeeRule = ({ onClose, onSuccess }) => {
 
         {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Rule Name */}
           <div>
             <label className="text-[13px] font-medium">Rule Name</label>
             <input
@@ -100,7 +111,6 @@ const CreateNewFeeRule = ({ onClose, onSuccess }) => {
             />
           </div>
 
-          {/* Type */}
           <div>
             <label className="text-[13px] font-medium">Type</label>
             <select
@@ -117,7 +127,6 @@ const CreateNewFeeRule = ({ onClose, onSuccess }) => {
             </select>
           </div>
 
-          {/* Structure */}
           <div>
             <label className="text-[13px] font-medium">Structure</label>
             <select
@@ -134,21 +143,19 @@ const CreateNewFeeRule = ({ onClose, onSuccess }) => {
             </select>
           </div>
 
-          {/* Fee Amount */}
           <div>
             <label className="text-[13px] font-medium">Fee Amount</label>
             <input
-              type="text"
+              type="number"
               name="amount"
               value={form.amount}
               onChange={handleChange}
-              placeholder="Enter amount (e.g. ₦50 or 1.5%)"
+              placeholder="Enter amount"
               className="w-full mt-1 p-3 border rounded-lg text-[13px]"
               required
             />
           </div>
 
-          {/* Limits */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="text-[13px] font-medium">Min Limit</label>
@@ -176,7 +183,6 @@ const CreateNewFeeRule = ({ onClose, onSuccess }) => {
             </div>
           </div>
 
-          {/* Status */}
           <div>
             <label className="text-[13px] font-medium">Status</label>
             <select
@@ -190,7 +196,6 @@ const CreateNewFeeRule = ({ onClose, onSuccess }) => {
             </select>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-center gap-10 pt-4">
             <button
               type="button"

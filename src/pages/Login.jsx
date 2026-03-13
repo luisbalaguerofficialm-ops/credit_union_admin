@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { LogIn, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
 
 const Login = () => {
   const [email, setEmail] = useState("");

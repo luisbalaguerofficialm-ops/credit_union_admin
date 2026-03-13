@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 /* API URL pattern */
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
 
 const SessionSecurity = () => {
   const token = localStorage.getItem("token");

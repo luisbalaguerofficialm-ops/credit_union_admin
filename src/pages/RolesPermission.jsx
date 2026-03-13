@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import CreateRoleModal from "../components/model/CreateRoleModel";
 import RolePermission from "../components/model/RolePermission";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
 
 const RolesPermission = () => {
   const [roles, setRoles] = useState([]);

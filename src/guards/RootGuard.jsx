@@ -17,7 +17,7 @@ const RootGuard = ({ children }) => {
     const checkSuperAdmin = async () => {
       try {
         const res = await fetch(
-          "https://admin-credit-union.onrender.com/api/auth/super-admin-exists",
+          "https://admin-admin-credit.onrender.com/api/auth/super-admin-exists",
         );
         const data = await res.json();
 
@@ -45,7 +45,9 @@ const RootGuard = ({ children }) => {
       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-100 to-indigo-100">
         <div className="text-center space-y-4">
           <Loader2 className="animate-spin w-10 h-10 text-blue-600 mx-auto" />
-          <p className="text-gray-600 font-medium">Initializing...</p>
+          <p className="text-gray-600 text-2xl font-medium">
+            loading please wait...
+          </p>
         </div>
       </div>
     );

@@ -15,12 +15,13 @@ import {
   Loader2,
   TrendingUp,
   BarChart3,
+  Link,
 } from "lucide-react";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
 
 const Stat = ({ icon: Icon, label, value, badge, color }) => (
-  <div className="bg-white border rounded-xl p-4 flex items-start justify-between shadow-sm">
+  <div className="bg-white border  border-gray-100 rounded-xl p-4 flex items-start justify-between shadow-sm">
     <div className="flex items-center gap-3">
       <div className={`p-2 rounded-lg ${color}`}>
         <Icon className="w-5 h-5 text-white" />
@@ -47,7 +48,6 @@ const AdminDashboard = () => {
     recentTransactions: [],
   });
   const token = localStorage.getItem("adminToken");
-
   useEffect(() => {
     const fetchDashboardData = async () => {
       if (!token) {
@@ -61,23 +61,29 @@ const AdminDashboard = () => {
         setError(null);
         const headers = { Authorization: `Bearer ${token}` };
 
-        const response = await fetch(`${API_URL}/admin/dashboard-summary`, {
-          headers,
-        });
-
-        if (!response.ok) {
+        const response = await fetch(`${API_URL}/dashboard`, { headers });
+        if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
-        }
 
         const result = await response.json();
 
         if (result.success) {
+          const stats = result.data;
+
           setData({
-            stats: result.stats || {},
-            recentActivities: result.activities || [],
-            recentTransactions: result.transactions || [],
+            stats: {
+              totalUsers: stats.totalUsers,
+              totalBalance: stats.totalBalance,
+              totalTransfers: stats.totalTransactions,
+              totalDeposits: stats.todayDeposits,
+              pendingKyc: stats.pendingKYC,
+              flaggedCount: stats.flaggedTransactions,
+              openTickets: 0,
+              pendingDisputes: 0,
+            },
+            recentActivities: stats.recentActivities || [],
+            recentTransactions: stats.recentTransactions || [],
           });
-          toast.success("Dashboard data loaded successfully");
         } else {
           throw new Error(result.message || "Failed to fetch dashboard data");
         }
@@ -95,11 +101,11 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100 p-6">
         <Loader2 className="w-10 h-10 text-blue-600 animate-spin mb-4" />
         <p className="text-gray-600 font-medium">Fetching real-time data...</p>
         <p className="text-gray-400 text-sm mt-1">
-          This may take a few seconds
+          This may take a few seconds..
         </p>
       </div>
     );
@@ -107,7 +113,7 @@ const AdminDashboard = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-red-100 to-orange-100 p-6">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md text-center">
           <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-3" />
           <h2 className="text-lg font-semibold text-red-900 mb-2">
@@ -126,7 +132,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen text-left bg-gray-50 p-6 space-y-6">
+    <div className="min-h-screen text-left bg-gradient-to-br from-blue-50 to-indigo-50 p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -150,14 +156,12 @@ const AdminDashboard = () => {
           label="Total Users"
           value={data.stats.totalUsers?.toLocaleString()}
           color="bg-blue-600"
-          className="border border-gray-200"
         />
         <Stat
           icon={Wallet}
           label="Total System Balance"
           value={`$${data.stats.totalBalance?.toLocaleString()}`}
           color="bg-green-600"
-          className="border border-gray-200"
         />
         <Stat
           icon={ArrowLeftRight}
@@ -171,12 +175,11 @@ const AdminDashboard = () => {
           label="Total Deposits"
           value={data.stats.totalDeposits?.toLocaleString()}
           color="bg-orange-500"
-          className="border border-gray-200"
         />
       </div>
 
       {/* Alert Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Stat
           icon={AlertCircle}
           label="Pending KYC"
@@ -201,11 +204,11 @@ const AdminDashboard = () => {
           value={data.stats.pendingDisputes}
           color="bg-orange-400"
         />
-      </div>
+      </div> */}
 
       {/* Middle Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white border rounded-xl p-5 shadow-sm">
+        <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="font-semibold text-gray-900 flex items-center gap-2">
@@ -364,12 +367,14 @@ const AdminDashboard = () => {
           <h3 className="font-semibold text-gray-900 mb-4">Quick Actions</h3>
           <div className="space-y-3 text-sm font-medium">
             <button
+              to="/admin/create-admin"
               onClick={() =>
                 toast.info("Create Admin Role feature coming soon")
               }
-              className="w-full flex items-center gap-3 p-3 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-colors"
+              className="w-full h-9 flex items-center gap-3 p-3 rounded-lg border border-gray-200 text-gray-700 transition-colors"
             >
-              <ShieldPlus className="w-4 h-4" /> Create Admin Role
+              <ShieldPlus className="w-4 h-4 text-purple-500" /> Create Admin
+              Role
             </button>
             <button
               onClick={() => toast.info("Redirecting to KYC management...")}
@@ -385,13 +390,6 @@ const AdminDashboard = () => {
               className="w-full flex items-center gap-3 p-3 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
             >
               <Flag className="w-4 h-4 text-red-600" /> Flagged Transactions
-            </button>
-            <button
-              onClick={() => toast.info("Redirecting to support tickets...")}
-              className="w-full flex items-center gap-3 p-3 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              <Headphones className="w-4 h-4 text-blue-600" />
-              Support Tickets
             </button>
           </div>
         </div>

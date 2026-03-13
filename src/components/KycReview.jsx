@@ -9,7 +9,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
-const BASE_URL = "https://admin-credit-union.onrender.com/api";
+const BASE_URL = "https://admin-admin-credit.onrender.com/api";
 
 const KycReview = ({ user, onClose, onRefresh }) => {
   const [loading, setLoading] = useState(false);

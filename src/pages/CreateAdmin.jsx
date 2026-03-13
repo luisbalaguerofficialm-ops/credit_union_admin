@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { Loader2, ShieldPlus } from "lucide-react";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
 
 const CreateAdmin = () => {
   const [form, setForm] = useState({

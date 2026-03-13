@@ -14,8 +14,8 @@ import Papa from "papaparse";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
-const SOCKET_URL = "https://admin-credit-union.onrender.com";
+const API_URL = "http://localhost:5000/api";
+const SOCKET_URL = "http://localhost:5000";
 
 const TransactionMonitor = () => {
   const [search, setSearch] = useState("");

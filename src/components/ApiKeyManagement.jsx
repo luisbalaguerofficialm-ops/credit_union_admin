@@ -9,7 +9,7 @@ const ApiKeyManagement = () => {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
   const token = localStorage.getItem("adminToken");
 
   // Fetch API Keys
@@ -65,7 +65,8 @@ const ApiKeyManagement = () => {
   };
 
   const revokeKey = async (id) => {
-    if (!window.confirm("Are you sure you want to revoke this API key?")) return;
+    if (!window.confirm("Are you sure you want to revoke this API key?"))
+      return;
 
     try {
       const res = await fetch(`${API_URL}/admin/api-keys/${id}/revoke`, {

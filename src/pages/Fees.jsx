@@ -1,12 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useContext } from "react";
 import { Plus, Search, Loader2, AlertTriangle, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import CreateNewFeeRule from "../components/model/CreateNewFeeRule";
 import EditFeeRule from "../components/model/EditFeeRule";
+import { AuthContext } from "../context/AuthContext";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
 
 const Fees = () => {
+  const { token } = useContext(AuthContext); // ✅ Using AuthContext
+
   const [fees, setFees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(null);
@@ -17,21 +20,20 @@ const Fees = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingFee, setEditingFee] = useState(null);
 
-  const token = localStorage.getItem("adminToken");
-
   /**
    * FETCH FEES
    */
   const fetchFees = async () => {
     if (!token) {
-      toast.error("Authentication token not found");
+      toast.error("Authentication error. Please login again.");
       setLoading(false);
       return;
     }
 
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/admin/fee-rules`, {
+
+      const res = await fetch(`${API_URL}/fees`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -40,8 +42,8 @@ const Fees = () => {
 
       const data = await res.json();
 
-      if (data.success) {
-        setFees(Array.isArray(data.fees) ? data.fees : []);
+      if (res.ok && data.success) {
+        setFees(Array.isArray(data.data) ? data.data : []);
       } else {
         throw new Error(data.message || "Failed to fetch fees");
       }
@@ -55,20 +57,28 @@ const Fees = () => {
   };
 
   useEffect(() => {
-    fetchFees();
+    if (token) {
+      fetchFees();
+    }
   }, [token]);
 
   /**
    * DELETE FEE RULE
    */
   const handleDeleteFee = async (feeId) => {
+    if (!token) {
+      toast.error("Authentication error. Please login again.");
+      return;
+    }
+
     if (!window.confirm("Are you sure you want to delete this fee rule?")) {
       return;
     }
 
     setDeleting(feeId);
+
     try {
-      const res = await fetch(`${API_URL}/admin/fee-rules/${feeId}`, {
+      const res = await fetch(`${API_URL}/fees/${feeId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -76,7 +86,8 @@ const Fees = () => {
       });
 
       const data = await res.json();
-      if (data.success) {
+
+      if (res.ok && data.success) {
         toast.success("Fee rule deleted successfully");
         fetchFees();
       } else {
@@ -155,7 +166,7 @@ const Fees = () => {
         >
           <option value="All">All Status</option>
           <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
+          <option value="Disabled">Disabled</option>
         </select>
 
         <select
@@ -174,30 +185,24 @@ const Fees = () => {
 
       {/* TABLE */}
       <div className="bg-white rounded-xl shadow p-5">
-        <h3 className="font-semibold mb-4 text-gray-900">
+        <h3 className="font-semibold mb-4 text-blue-600">
           Fee Rules ({filteredFees.length})
         </h3>
 
         {loading ? (
-          <div className="flex items-center justify-center h-48">
-            <div className="text-center">
-              <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-2" />
-              <p className="text-sm text-gray-500">Loading fee rules...</p>
-            </div>
+          <div className="flex flex-col items-center justify-center h-48">
+            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+            loading fee rules...
           </div>
         ) : filteredFees.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-48">
             <AlertTriangle className="w-10 h-10 text-gray-300 mb-2" />
-            <p className="text-sm text-gray-500">
-              {search || statusFilter !== "All" || typeFilter !== "All"
-                ? "No fee rules match your filters"
-                : "No fee rules found"}
-            </p>
+            <p className="text-sm text-blue-600">No fee rules found</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="border-b border-gray-200 text-gray-600 bg-gray-50">
+            <table className="w-full text-medium ">
+              <thead className="border-b border-gray-200 text-[#006A91] bg-gray-50">
                 <tr>
                   <th className="py-3 px-2 text-left font-semibold">
                     Rule Name
@@ -207,65 +212,36 @@ const Fees = () => {
                     Structure
                   </th>
                   <th className="py-3 px-2 text-left font-semibold">Amount</th>
-                  <th className="py-3 px-2 text-left font-semibold">Limits</th>
                   <th className="py-3 px-2 text-left font-semibold">Status</th>
-                  <th className="py-3 px-2 text-left font-semibold">Updated</th>
                   <th className="py-3 px-2 text-left font-semibold">Actions</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-gray-200">
                 {filteredFees.map((fee) => (
-                  <tr key={fee._id} className="hover:bg-gray-50 transition">
-                    <td className="py-3 px-2 font-medium text-gray-900">
-                      {fee.name || "N/A"}
+                  <tr key={fee._id}>
+                    <td className="py-3 px-2">{fee.ruleName}</td>
+                    <td className="py-3 px-2">{fee.type}</td>
+                    <td className="py-3 px-2">{fee.structure}</td>
+                    <td>
+                      {fee.structure === "Fixed" && fee.fixedFee}
+                      {fee.structure === "Percentage" && `${fee.percentage}%`}
+                      {fee.structure === "Tiered" && "Tiered"}
                     </td>
-                    <td className="py-3 px-2 text-gray-700">
-                      {fee.type || "N/A"}
-                    </td>
-                    <td className="py-3 px-2 text-gray-700">
-                      {fee.structure || "N/A"}
-                    </td>
-                    <td className="py-3 px-2 font-semibold text-gray-900">
-                      {fee.amount ? `$${fee.amount}` : "N/A"}
-                    </td>
-                    <td className="py-3 px-2 text-gray-700">
-                      {fee.limits ? `$${fee.limits.toLocaleString()}` : "N/A"}
-                    </td>
-                    <td className="py-3 px-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          fee.status === "Active"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-700"
-                        }`}
-                      >
-                        {fee.status || "Inactive"}
-                      </span>
-                    </td>
-                    <td className="py-3 px-2 text-sm text-gray-600">
-                      {fee.updatedAt
-                        ? new Date(fee.updatedAt).toLocaleDateString()
-                        : "N/A"}
-                    </td>
+
+                    <td className="py-3 px-2">{fee.status}</td>
                     <td className="py-3 px-2 flex gap-2">
                       <button
                         onClick={() => handleEdit(fee)}
-                        disabled={deleting === fee._id}
-                        className="text-blue-600 hover:text-blue-800 hover:underline text-sm font-medium transition disabled:opacity-50"
+                        className="text-blue-500 hover:text-blue-700 text-sm"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDeleteFee(fee._id)}
-                        disabled={deleting === fee._id}
-                        className="text-red-600 hover:text-red-800 transition disabled:opacity-50 flex items-center gap-1"
+                        className="text-red-500 hover:text-red-700 transition text-sm"
                       >
-                        {deleting === fee._id ? (
-                          <Loader2 size={14} className="animate-spin" />
-                        ) : (
-                          <Trash2 size={14} />
-                        )}
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -276,7 +252,6 @@ const Fees = () => {
         )}
       </div>
 
-      {/* MODALS */}
       {showCreateModal && (
         <CreateNewFeeRule
           onClose={() => {

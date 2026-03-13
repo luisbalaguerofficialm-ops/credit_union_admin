@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "http://localhost:5000/api";
 
 const Reports = () => {
   const [lineData, setLineData] = useState([]);

@@ -16,8 +16,8 @@ import Papa from "papaparse";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
-const SOCKET_URL = "https://admin-credit-union.onrender.com";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
+const SOCKET_URL = "https://admin-admin-credit.onrender.com";
 
 let socket = null;
 
@@ -89,7 +89,7 @@ const KYCVerification = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/admin/kyc`, {
+      const res = await fetch(`${API_URL}/api/kyc`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

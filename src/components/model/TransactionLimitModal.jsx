@@ -13,7 +13,7 @@ const TransactionLimitModal = ({ onClose, userId, onSuccess }) => {
   const [saving, setSaving] = useState(false);
   const [userData, setUserData] = useState(null);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
   const token = localStorage.getItem("adminToken");
 
   // Fetch current limits on mount

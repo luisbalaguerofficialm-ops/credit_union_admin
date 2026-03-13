@@ -5,7 +5,7 @@ import ApiKeyManagement from "../components/ApiKeyManagement";
 import PreferencesModal from "../components/model/PreferencesModal";
 import SessionSecurity from "../components/SessionSecurity";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "http://localhost:5000/api";
 
 /* TOGGLE */
 const Toggle = ({ checked, onChange, disabled }) => (

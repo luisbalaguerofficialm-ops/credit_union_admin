@@ -25,7 +25,7 @@ const Topbar = ({ setMobileOpen }) => {
   const currentPage = pageNames[location.pathname] || "";
 
   return (
-    <div className="fixed top-0 left-0 lg:left-64 right-0 h-16 bg-white flex items-center justify-between px-6 z-50 shadow-sm border-b border-gray-200">
+    <div className="fixed top-0 left-0 lg:left-64 right-0 h-16 bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-between px-6 z-50 shadow-sm border-b border-gray-200">
       {/* Mobile Hamburger + Page Title */}
       <div className="flex items-center gap-4">
         <button
@@ -63,9 +63,9 @@ const Topbar = ({ setMobileOpen }) => {
           <Bell className="w-5 h-5 text-gray-600 hover:text-blue-600" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
-        <button className="p-2 rounded-lg hover:bg-gray-100 transition">
+        {/* <button className="p-2 rounded-lg hover:bg-gray-100 transition">
           <UserCircle2 className="w-6 h-6 text-gray-600 hover:text-blue-600" />
-        </button>
+        </button> */}
       </div>
     </div>
   );

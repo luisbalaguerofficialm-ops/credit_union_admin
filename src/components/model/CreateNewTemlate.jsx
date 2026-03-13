@@ -8,7 +8,7 @@ const CreateNewTemplate = ({ onClose, onCreate, onSuccess }) => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
   const token = localStorage.getItem("adminToken");
 
   const variables = [

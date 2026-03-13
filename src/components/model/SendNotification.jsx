@@ -23,7 +23,7 @@ const SendNotification = () => {
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
   const token = localStorage.getItem("adminToken");
 
   // Fetch templates and history on mount
@@ -219,7 +219,7 @@ const SendNotification = () => {
             >
               <option value="">Select a template</option>
               {templates.map((template) => (
-                <option key={template.id} value={template.id}>
+                <option key={template._id} value={template._id}>
                   {template.name}
                 </option>
               ))}
@@ -284,7 +284,7 @@ const SendNotification = () => {
                   />
                   All Users
                 </div>
-                <span className="text-gray-500">14,000 users</span>
+                <span className="text-gray-500">users</span>
               </label>
 
               <label className="flex items-center justify-between p-2 border rounded-md">
@@ -326,7 +326,7 @@ const SendNotification = () => {
                   />
                   Inactive Users
                 </div>
-                <span className="text-gray-500">2,000 users</span>
+                <span className="text-gray-500"> users</span>
               </label>
 
               <label className="flex items-center justify-between p-2 border rounded-md">
@@ -505,7 +505,7 @@ const SendNotification = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {templates.map((template) => (
                 <div
-                  key={template.id}
+                  key={template._id}
                   className="border rounded-xl p-4 shadow-sm"
                 >
                   <div className="flex justify-between items-start mb-3">

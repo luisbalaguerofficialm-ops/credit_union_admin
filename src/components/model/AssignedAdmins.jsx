@@ -21,7 +21,7 @@ const AssignedAdmins = () => {
   const [loading, setLoading] = useState(true);
   const [removing, setRemoving] = useState(null);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
   const token = localStorage.getItem("adminToken");
 
   // Fetch assigned admins

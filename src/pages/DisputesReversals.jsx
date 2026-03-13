@@ -14,7 +14,7 @@ import DisputeModel from "../components/model/DisputeModel";
 import Papa from "papaparse";
 import jsPDF from "jspdf";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
 
 const DisputesReversals = () => {
   const [openModal, setOpenModal] = useState(false);

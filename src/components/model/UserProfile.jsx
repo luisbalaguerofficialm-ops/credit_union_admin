@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import {
-  X,
-  User,
-  Wallet,
-  Monitor,
-  Link2,
-  FileText,
-  ShieldCheck,
-} from "lucide-react";
+import { X, User, Wallet } from "lucide-react";
 
 const UserProfile = ({ userId, onClose }) => {
   const [activeTab, setActiveTab] = useState("profile");
@@ -17,7 +9,7 @@ const UserProfile = ({ userId, onClose }) => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
   const token = localStorage.getItem("adminToken");
 
   // Fetch user profile and wallet data on mount
@@ -30,7 +22,7 @@ const UserProfile = ({ userId, onClose }) => {
   const fetchUserData = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/admin/users/${userId}`, {
+      const res = await fetch(`${API_URL}/users/admin/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -68,9 +60,6 @@ const UserProfile = ({ userId, onClose }) => {
 
             <label>Phone</label>
             <p>{userData?.phone || "N/A"}</p>
-
-            <label>Address</label>
-            <p>{userData?.address || "N/A"}</p>
           </div>
         </div>
 
@@ -78,12 +67,6 @@ const UserProfile = ({ userId, onClose }) => {
         <div>
           <h6 className="font-semibold text-[18px]">Account Details</h6>
           <div className="flex flex-col gap-2 mt-2">
-            <label>BVN</label>
-            <p>{userData?.bvn || "N/A"}</p>
-
-            <label>NIN</label>
-            <p>{userData?.nin || "N/A"}</p>
-
             <label>Date Joined</label>
             <p>
               {userData?.createdAt
@@ -187,7 +170,6 @@ const UserProfile = ({ userId, onClose }) => {
 
       <div className="flex mt-7 justify-between items-center">
         <h3 className="text-lg font-semibold">Recent Transactions</h3>
-        <button className="text-[#006A91]">View All →</button>
       </div>
 
       {transactions.length === 0 ? (
@@ -220,36 +202,11 @@ const UserProfile = ({ userId, onClose }) => {
     </div>
   );
 
-  // ------------------ OTHER TABS ------------------
-  const DevicesTab = () => (
-    <div className="mt-10">
-      <p>Devices Section Coming Soon...</p>
-    </div>
-  );
-
-  const LinkedTab = () => (
-    <div className="mt-10">
-      <p>Linked Accounts Section Coming Soon...</p>
-    </div>
-  );
-
-  const NotesTab = () => (
-    <div className="mt-10">
-      <p>Notes Section Coming Soon...</p>
-    </div>
-  );
-
-  const AdminActionsTab = () => (
-    <div className="mt-10">
-      <p>Admin Actions Section Coming Soon...</p>
-    </div>
-  );
-
   if (loading) {
     return (
       <div className="bg-gray-200 bg-opacity-50 w-full fixed inset-0 flex justify-center items-center px-4 z-50">
         <div className="bg-white p-6 rounded-xl w-[90%] max-w-6xl shadow">
-          <p className="text-center text-gray-600">Loading user profile...</p>
+          <p className="text-center text-blue-600">Loading please wait...</p>
         </div>
       </div>
     );
@@ -283,14 +240,10 @@ const UserProfile = ({ userId, onClose }) => {
         </div>
 
         {/* Tabs */}
-        <div className="flex text-[#605E5E] font-semibold shadow h-12 items-center gap-8 border-b pb-2">
+        <div className="flex text-[#605E5E] text-3xl justify-center font-semibold shadow h-12 items-center gap-8 border-b pb-2 border-gray-200">
           {[
             ["profile", <User size={18} />, "Profile"],
             ["wallet", <Wallet size={18} />, "Wallet"],
-            ["devices", <Monitor size={18} />, "Devices"],
-            ["linked", <Link2 size={18} />, "Linked Accounts"],
-            ["notes", <FileText size={18} />, "Notes"],
-            ["admin", <ShieldCheck size={18} />, "Admin Actions"],
           ].map(([key, icon, label]) => (
             <button
               key={key}
@@ -307,10 +260,6 @@ const UserProfile = ({ userId, onClose }) => {
         {/* Active Tab */}
         {activeTab === "profile" && <ProfileTab />}
         {activeTab === "wallet" && <WalletTab />}
-        {activeTab === "devices" && <DevicesTab />}
-        {activeTab === "linked" && <LinkedTab />}
-        {activeTab === "notes" && <NotesTab />}
-        {activeTab === "admin" && <AdminActionsTab />}
       </div>
     </div>
   );

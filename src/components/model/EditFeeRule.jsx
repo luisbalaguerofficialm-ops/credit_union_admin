@@ -4,54 +4,79 @@ import { toast } from "react-toastify";
 
 const EditFeeRule = ({ fee, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
-    ruleName: fee?.ruleName || "Default Transfer Fee",
-    transactionType: fee?.type?.toLowerCase() || "transfer",
-    feeType: fee?.structure?.toLowerCase() || "percentage",
-    feeValue: fee?.amount?.replace(/[^0-9.]/g, "") || "1.5",
-    minAmount: fee?.minLimit || "100",
-    maxAmount: fee?.maxLimit || "500000",
-    status: fee?.status?.toLowerCase() || "active",
+    ruleName: fee?.ruleName || "",
+    type: fee?.type || "Transfer",
+    structure: fee?.structure || "Fixed",
+    amount: fee?.amount || "",
+    status: fee?.status || "Active",
+    tiers:
+      fee?.structure === "Tiered" && fee?.tiers?.length
+        ? fee.tiers
+        : [{ min: "", max: "", fee: "" }],
   });
+
   const [loading, setLoading] = useState(false);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
   const token = localStorage.getItem("adminToken");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleTierChange = (index, field, value) => {
+    const updatedTiers = [...formData.tiers];
+    updatedTiers[index][field] = value;
+    setFormData({ ...formData, tiers: updatedTiers });
+  };
+
+  const addTier = () => {
+    setFormData({
+      ...formData,
+      tiers: [...formData.tiers, { min: "", max: "", fee: "" }],
+    });
+  };
+
+  const removeTier = (index) => {
+    const updated = formData.tiers.filter((_, i) => i !== index);
+    setFormData({ ...formData, tiers: updated });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !formData.ruleName ||
-      !formData.transactionType ||
-      !formData.feeType ||
-      !formData.feeValue ||
-      !formData.minAmount ||
-      !formData.maxAmount
-    ) {
-      toast.error("Please fill in all required fields");
+    if (!formData.ruleName || !formData.type || !formData.structure) {
+      toast.error("Please fill in required fields");
       return;
     }
 
     try {
       setLoading(true);
+
       const payload = {
-        name: formData.ruleName,
-        type:
-          formData.transactionType.charAt(0).toUpperCase() +
-          formData.transactionType.slice(1),
-        structure:
-          formData.feeType.charAt(0).toUpperCase() + formData.feeType.slice(1),
-        amount: parseFloat(formData.feeValue),
-        minLimit: parseFloat(formData.minAmount),
-        maxLimit: parseFloat(formData.maxAmount),
-        status: formData.status === "active" ? "Active" : "Disabled",
+        ruleName: formData.ruleName,
+        type: formData.type,
+        structure: formData.structure,
+        status: formData.status,
       };
 
-      const res = await fetch(`${API_URL}/admin/fee-rules/${fee._id}`, {
+      if (formData.structure === "Tiered") {
+        payload.tiers = formData.tiers.map((t) => ({
+          min: Number(t.min),
+          max: Number(t.max),
+          fee: Number(t.fee),
+        }));
+      } else {
+        if (formData.structure === "Fixed") {
+          payload.fixedFee = Number(formData.amount);
+        }
+
+        if (formData.structure === "Percentage") {
+          payload.percentage = Number(formData.amount);
+        }
+      }
+
+      const res = await fetch(`${API_URL}/fees/${fee._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +104,7 @@ const EditFeeRule = ({ fee, onClose, onSuccess }) => {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white w-full max-w-2xl rounded-xl max-h-screen overflow-y-auto p-6 md:p-10 relative">
+      <div className="bg-white w-full max-w-2xl rounded-xl max-h-screen overflow-y-auto p-6 md:p-10">
         {/* HEADER */}
         <div className="flex items-center gap-2 mb-6">
           <button
@@ -91,7 +116,6 @@ const EditFeeRule = ({ fee, onClose, onSuccess }) => {
           <h2 className="text-[18px] font-semibold">Edit Fee Rule</h2>
         </div>
 
-        {/* FORM */}
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Rule Name */}
           <div>
@@ -105,72 +129,106 @@ const EditFeeRule = ({ fee, onClose, onSuccess }) => {
             />
           </div>
 
-          {/* Transaction Type */}
+          {/* Type */}
           <div>
-            <label className="font-semibold text-[13px]">
-              Transaction Type
-            </label>
+            <label className="font-semibold text-[13px]">Type</label>
             <select
-              name="transactionType"
-              value={formData.transactionType}
+              name="type"
+              value={formData.type}
               onChange={handleChange}
               className="w-full mt-1 p-3 border rounded-lg text-[13px]"
             >
-              <option value="transfer">Transfer</option>
-              <option value="withdrawal">Withdrawal</option>
-              <option value="deposit">Deposit</option>
+              <option value="Transfer">Transfer</option>
+              <option value="Withdrawal">Withdrawal</option>
+              <option value="Service">Service</option>
             </select>
           </div>
 
-          {/* Fee Type */}
+          {/* Structure */}
           <div>
-            <label className="font-semibold text-[13px]">Fee Type</label>
+            <label className="font-semibold text-[13px]">Structure</label>
             <select
-              name="feeType"
-              value={formData.feeType}
+              name="structure"
+              value={formData.structure}
               onChange={handleChange}
               className="w-full mt-1 p-3 border rounded-lg text-[13px]"
             >
-              <option value="fixed">Fixed</option>
-              <option value="percentage">Percentage</option>
+              <option value="Fixed">Fixed</option>
+              <option value="Percentage">Percentage</option>
+              <option value="Tiered">Tiered</option>
             </select>
           </div>
 
-          {/* Fee Value */}
-          <div>
-            <label className="font-semibold text-[13px]">Fee Value</label>
-            <input
-              type="number"
-              name="feeValue"
-              value={formData.feeValue}
-              onChange={handleChange}
-              className="w-full mt-1 p-3 border rounded-lg text-[13px]"
-            />
-          </div>
-
-          {/* Min & Max Amount */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Fixed / Percentage */}
+          {formData.structure !== "Tiered" && (
             <div>
-              <label className="font-semibold text-[13px]">Min Amount</label>
+              <label className="font-semibold text-[13px]">Amount</label>
               <input
                 type="number"
-                name="minAmount"
-                value={formData.minAmount}
+                name="amount"
+                value={formData.amount}
                 onChange={handleChange}
                 className="w-full mt-1 p-3 border rounded-lg text-[13px]"
               />
             </div>
-            <div>
-              <label className="font-semibold text-[13px]">Max Amount</label>
-              <input
-                type="number"
-                name="maxAmount"
-                value={formData.maxAmount}
-                onChange={handleChange}
-                className="w-full mt-1 p-3 border rounded-lg text-[13px]"
-              />
+          )}
+
+          {/* Tiered Structure */}
+          {formData.structure === "Tiered" && (
+            <div className="space-y-4">
+              <label className="font-semibold text-[13px]">Fee Tiers</label>
+
+              {formData.tiers.map((tier, index) => (
+                <div key={index} className="grid grid-cols-3 gap-4 items-end">
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    value={tier.min}
+                    onChange={(e) =>
+                      handleTierChange(index, "min", e.target.value)
+                    }
+                    className="p-3 border rounded-lg text-[13px]"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    value={tier.max}
+                    onChange={(e) =>
+                      handleTierChange(index, "max", e.target.value)
+                    }
+                    className="p-3 border rounded-lg text-[13px]"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Fee"
+                    value={tier.fee}
+                    onChange={(e) =>
+                      handleTierChange(index, "fee", e.target.value)
+                    }
+                    className="p-3 border rounded-lg text-[13px]"
+                  />
+
+                  {formData.tiers.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeTier(index)}
+                      className="text-red-500 text-xs mt-2"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addTier}
+                className="text-blue-600 text-sm font-medium"
+              >
+                + Add Tier
+              </button>
             </div>
-          </div>
+          )}
 
           {/* Status */}
           <div>
@@ -181,8 +239,8 @@ const EditFeeRule = ({ fee, onClose, onSuccess }) => {
               onChange={handleChange}
               className="w-full mt-1 p-3 border rounded-lg text-[13px]"
             >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
+              <option value="Active">Active</option>
+              <option value="Disabled">Disabled</option>
             </select>
           </div>
 
@@ -192,14 +250,14 @@ const EditFeeRule = ({ fee, onClose, onSuccess }) => {
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-6 py-2 border w-[150px] hover:bg-gray-500 rounded-lg text-[13px] disabled:opacity-50"
+              className="px-6 py-2 border w-[150px] rounded-lg text-[13px]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-[#006A91] w-[150px] hover:bg-blue-800 text-white rounded-lg text-[13px] disabled:opacity-50"
+              className="px-6 py-2 bg-[#006A91] w-[150px] text-white rounded-lg text-[13px]"
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>

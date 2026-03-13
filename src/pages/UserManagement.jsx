@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Search, Plus, Loader2, AlertTriangle, RefreshCw } from "lucide-react";
 import { toast } from "react-toastify";
 
-import AddNewBeneficiary from "../components/AddNewBeneficiary";
 import UserProfile from "../components/model/UserProfile";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
 
 const UserManagement = () => {
   const token = localStorage.getItem("adminToken");
@@ -48,18 +47,20 @@ const UserManagement = () => {
         risk,
       });
 
-      const res = await fetch(`${API_URL}/admin/users?${query.toString()}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await fetch(
+        `${API_URL}/users/admin/users?${query.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       const data = await res.json();
 
       if (data.success) {
         setUsers(data.data || []);
         setTotalPages(data.totalPages || 1);
-        toast.success("Users loaded successfully");
       } else {
         setError("Failed to load users");
         toast.error("Failed to load users");
@@ -91,15 +92,6 @@ const UserManagement = () => {
             Manage and monitor all platform users
           </p>
         </div>
-
-        <button
-          onClick={() => setShowModal(true)}
-          disabled={loading || error}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-5 py-2 rounded-lg shadow-sm font-medium transition-colors whitespace-nowrap"
-        >
-          <Plus className="w-5 h-5" />
-          Add User
-        </button>
       </div>
 
       {/* ERROR STATE */}
@@ -235,7 +227,7 @@ const UserManagement = () => {
 
                   <td className="py-4 px-5 font-medium text-gray-900">
                     $
-                    {(user.balance || 0).toLocaleString("en-US", {
+                    {(user.wallet?.balance || 0).toLocaleString("en-US", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
@@ -333,11 +325,10 @@ const UserManagement = () => {
       )}
 
       {/* MODALS */}
-      {showModal && <AddNewBeneficiary onClose={() => setShowModal(false)} />}
 
       {showProfile && (
         <UserProfile
-          user={selectedUser}
+          userId={selectedUser._id}
           onClose={() => setShowProfile(false)}
         />
       )}

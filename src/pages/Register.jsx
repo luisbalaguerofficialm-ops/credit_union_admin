@@ -10,7 +10,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 
-const API_URL = "https://admin-credit-union.onrender.com/api";
+const API_URL = "https://admin-admin-credit.onrender.com/api";
 
 const Register = () => {
   const navigate = useNavigate();

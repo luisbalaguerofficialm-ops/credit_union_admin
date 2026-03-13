@@ -9,7 +9,7 @@ const AssignAdminModal = ({ onClose, onAssign }) => {
   const [loading, setLoading] = useState(true);
   const [assigning, setAssigning] = useState(false);
 
-  const API_URL = "https://admin-credit-union.onrender.com/api";
+  const API_URL = "https://admin-admin-credit.onrender.com/api";
   const token = localStorage.getItem("adminToken");
 
   // Fetch admins from backend
