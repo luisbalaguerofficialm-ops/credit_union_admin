@@ -46,7 +46,7 @@ const RootGuard = ({ children }) => {
         <div className="text-center space-y-4">
           <Loader2 className="animate-spin w-10 h-10 text-blue-600 mx-auto" />
           <p className="text-gray-600 text-2xl font-medium">
-            loading please wait...
+            Loading Please Wait...
           </p>
         </div>
       </div>

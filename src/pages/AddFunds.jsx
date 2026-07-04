@@ -30,8 +30,6 @@ const AddFunds = () => {
 
       const data = await res.json();
 
-      console.log("Funding API response:", data);
-
       if (data.success) {
         setRequests(data.requests || []);
       } else {

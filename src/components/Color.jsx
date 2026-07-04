@@ -1,0 +1,60 @@
+import React from 'react'
+
+const Color = () => {
+  return (
+    <div>
+       "primary": "#00516f",
+                        "surface-white": "#FFFFFF",
+                        "on-background": "#001f29",
+                        "on-tertiary-fixed-variant": "#004e5d",
+                        "surface-container-highest": "#c5e8f8",
+                        "inverse-on-surface": "#def4ff",
+                        "inverse-primary": "#85cffb",
+                        "surface": "#f3faff",
+                        "primary-fixed-dim": "#85cffb",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#006c80",
+                        "on-primary-fixed": "#001e2d",
+                        "on-secondary-container": "#4d6c06",
+                        "surface-container-high": "#caeefe",
+                        "surface-container-low": "#e5f6ff",
+                        "on-secondary-fixed": "#131f00",
+                        "surface-tint": "#00658b",
+                        "primary-fixed": "#c4e7ff",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#40484e",
+                        "on-surface": "#001f29",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#006a91",
+                        "surface-bright": "#f3faff",
+                        "sky-tint": "#F8FAFB",
+                        "surface-container": "#d7f2ff",
+                        "secondary-fixed": "#c9f081",
+                        "outline-variant": "#bfc8cf",
+                        "on-secondary-fixed-variant": "#364e00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#bde5ff",
+                        "on-primary-fixed-variant": "#004c6a",
+                        "secondary-fixed-dim": "#aed368",
+                        "tertiary": "#005262",
+                        "surface-variant": "#c5e8f8",
+                        "secondary": "#496801",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#adecff",
+                        "surface-dim": "#bcdff0",
+                        "on-tertiary-fixed": "#001f26",
+                        "tertiary-fixed-dim": "#79d3eb",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "deep-teal": "#234552",
+                        "on-tertiary-container": "#a1eaff",
+                        "outline": "#70787f",
+                        "background": "#f3faff",
+                        "inverse-surface": "#103441",
+                        "secondary-container": "#c6ed7e",
+                        "error-container": "#ffdad6"
+    </div>
+  )
+}
+
+
