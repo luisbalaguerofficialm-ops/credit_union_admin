@@ -5,13 +5,10 @@ import DashboardLayout from "../Layout/DashboardLayout";
 import RequireSuperAdmin from "../guards/RequireSuperAdmin";
 import PublicRegisterGuard from "../guards/PublicRegisterGuard";
 import RootGuard from "../guards/RootGuard";
-
 // Pages
 import AdminDashboard from "../pages/AdminDashboard";
 import Reports from "../pages/Reports";
 import UserManagement from "../pages/UserManagement";
-import KYCVerification from "../pages/KYCVerification";
-
 import Fees from "../pages/Fees";
 import TransactionMonitor from "../pages/TransactionMonitor";
 // import DisputesReversals from "../pages/DisputesReversals";
@@ -59,7 +56,7 @@ const AppRoutes = () => {
         <Route path="admin/dashboard" element={<AdminDashboard />} />
         <Route path="admin/reports" element={<Reports />} />
         <Route path="admin/users" element={<UserManagement />} />
-        <Route path="admin/kyc" element={<KYCVerification />} />
+    
         <Route path="admin/fees" element={<Fees />} />
         <Route path="admin/notifications" element={<SendNotification />} />
         <Route
